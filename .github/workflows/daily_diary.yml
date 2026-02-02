@@ -1,0 +1,28 @@
+name: Create Daily Notion Page
+
+on:
+  schedule:
+    # 毎日日本時間の深夜0時（UTC 15時）に実行
+    - cron: '0 15 * * *'
+  workflow_dispatch: # 手動実行ボタンを有効化
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run script
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: python create_diary.py
